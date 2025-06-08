@@ -11,7 +11,7 @@ The theme files are already downloaded and saved under the `themes` folder, so y
 ## Installing ##
 1. Run `sudo chmod +x` on the `installer.sh` located at the root of the folder, and execute by `./install.sh`. Afterwards, logout and login again to see the changes.
 2. On Gnome Extensions, please make sure that User Themes (https://gitlab.gnome.org/GNOME/gnome-shell-extensions) is installed and enabled.
-3. On Goome Tweaks, select "Dracula" for the Shell Themes and Legacy Applications option, and "Tela Circle Dracula" for the Icons.
+3. On Gnome Tweaks, select "Dracula" for the Shell Themes and Legacy Applications option, and "Tela Circle Dracula" for the Icons.
 
 ## Example Images From My System ##
 
