@@ -18,6 +18,15 @@ else
 	echo "GNOME Tweaks is already installed."
 fi
 
+#check if gnome shell extensions is installed
+echo "Checking if GNOME Shell Extensions is installed..."
+if ! command -v gnome-shell-extension-tool &> /dev/null; then
+	echo "GNOME Shell Extensions could not be found, installing..."
+	sudo apt-get install -y gnome-shell-extensions
+else
+	echo "GNOME Shell Extensions is already installed."
+fi
+
 # Checking if tar is installed
 echo "Setting up compression tools..."
 if ! command -v tar &> /dev/null; then
