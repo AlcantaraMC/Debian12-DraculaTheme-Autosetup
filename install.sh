@@ -22,7 +22,7 @@ fi
 echo "Checking if GNOME Shell Extensions is installed..."
 if ! command -v gnome-shell-extension-tool &> /dev/null; then
 	echo "GNOME Shell Extensions could not be found, installing..."
-	sudo apt-get install -y gnome-shell-extensions
+	sudo apt-get install -y gnome-shell-extensions gnome-extensions
 else
 	echo "GNOME Shell Extensions is already installed."
 fi
