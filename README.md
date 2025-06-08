@@ -6,7 +6,7 @@ I happen to like the Dracula Theme from Eliver Lara (available on gnomelook dot 
 
 ## Prerequisites ##
 You will need a local user with `sudo` privileges, and the Gnome Tweaks and Gnome Extensions. The installer will check first if both of these are installed; if not, it will install them. You may be prompted to input your password from time to time.
-The theme files are already downloaded and saved under the `themes` folder, so you don't need to donwload anything.
+The theme files are already downloaded and saved under the `themes` folder, so you don't need to download anything.
 
 ## Installing ##
 1. Run `sudo chmod +x` on the `installer.sh` located at the root of the folder, and execute by `./install.sh`. Afterwards, logout and login again to see the changes.
