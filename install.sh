@@ -7,7 +7,7 @@ clear
 # Preliminary instructions
 printf 'Welcome to the Dracula Theme and Tela-circle-dracula Icon Set Installer for GNOME!\n\n'
 
-printf 'NOTE: This script requires sudo privileges to install necessary packages and set up directories. Please ensure you have the necessary permissions to run this script.\n\n'
+printf 'NOTE: This script requires sudo privileges to install necessary packages and set up directories. Please ensure you have the necessary permissions to run this script. This script is tested on Debian and Ubuntu running GNOME.\n\n'
 
 printf 'This script will automatically install the Dracula (https://github.com/dracula/gtk) theme and Tela-circle-dracula icon set (https://github.com/vinceliuice/Tela-circle-icon-theme) for GNOME, on the local user.\n\n'
 
