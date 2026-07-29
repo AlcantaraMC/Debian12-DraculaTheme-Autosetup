@@ -6,6 +6,7 @@ clear
 
 # Preliminary instructions
 echo "This script will automatically install the Dracula (https://github.com/dracula/gtk) theme and Tela-circle-dracula icon set (https://github.com/vinceliuice/Tela-circle-icon-theme) for GNOME, on the local user."
+
 echo "Please ensure that Gnome Tweaks and Gnome Shell Extensions (https://gitlab.gnome.org/GNOME/gnome-shell-extensions) is installed on your system. This does not require root privileges, only a local user with sudo. Please ensure you have the necessary permissions to install packages and create directories. You may be prompted for your password to install packages. Press any key to continue or Ctrl+C to cancel..."
 read -n 1 -s
 
@@ -36,10 +37,12 @@ else
 	echo "tar is already installed."
 fi
 
+# get the current logged in user's directory
+USER_HOME=$(eval echo ~${SUDO_USER})
 
 # Setting up directories for themes and icons
-ICONS_DIRECTORY=~/.icons
-THEMES_DIRECTORY=~/.themes
+ICONS_DIRECTORY=$USER_HOME/.icons
+THEMES_DIRECTORY=$USER_HOME/.themes
 
 echo "Setting up themes and icons directories..."
 
