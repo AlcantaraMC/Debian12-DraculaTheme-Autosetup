@@ -40,6 +40,9 @@ fi
 # get the current logged in user's directory
 USER_HOME=$(eval echo ~${SUDO_USER})
 
+# getting the current logged in user's username
+USER_NAME=$(eval echo ${SUDO_USER})
+
 # Setting up directories for themes and icons
 ICONS_DIRECTORY=$USER_HOME/.icons
 THEMES_DIRECTORY=$USER_HOME/.themes
@@ -71,28 +74,36 @@ cp -r ./Tela-circle-dracula "$ICONS_DIRECTORY"
 echo "Cleaning up extracted files..."
 
 # Checking if ~/.config/gtk-4.0 exists
-if [ -d ~/.config/gtk-4.0 ]; then
+if [ -d $USER_HOME/.config/gtk-4.0 ]; then
 	echo "Directory ~/.config/gtk-4.0 already exists."
 else
 	echo "Creating directory ~/.config/gtk-4.0..."
-	mkdir -p ~/.config/gtk-4.0
+	mkdir -p $USER_HOME/.config/gtk-4.0
 fi
 
 # Copying GTK CSS files to the gtk-4.0 directory
-cp ./Dracula/gtk-4.0/gtk.css ~/.config/gtk-4.0/
-cp ./Dracula/gtk-4.0/gtk-dark.css ~/.config/gtk-4.0/
+cp ./Dracula/gtk-4.0/gtk.css $USER_HOME/.config/gtk-4.0/
+cp ./Dracula/gtk-4.0/gtk-dark.css $USER_HOME/.config/gtk-4.0/
 
 # copying assets to the correct directories
-cp -r ./Dracula/assets ~/.config/
+cp -r ./Dracula/assets $USER_HOME/.config/
 
 # Displaying the directories
 echo "Themes directory: $THEMES_DIRECTORY"
 echo "Icons directory: $ICONS_DIRECTORY"
 
-clear
+# automatically select the theme and icon set using gsettings
+echo "Applying the Dracula theme and Tela-circle-dracula icon set to the current user ($USER_NAME)..."
+sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface gtk-theme "Dracula"
+sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-dracula"
+
+# also set the shell theme to Dracula
+sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.shell.extensions.user-theme name "Dracula"
+
+echo "###### FINISH ######"
 echo "Setup complete! You can now use GNOME Tweaks to apply the themes and icons."
 echo "Please open GNOME Tweaks and select the 'Dracula' theme on the Shell and Legacy Applications menu, and 'Tela-circle-dracula' icon set."
 echo "Awesome wallpapers to complement your installation can be found here: https://github.com/dracula/wallpaper"
-echo "Log out and log back in to see the changes take effect."
+echo "Log out and log back in to see the changes take effect. If not, restart your system."
 echo "Press any key to exit..."
 read -n 1 -s
