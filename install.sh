@@ -5,36 +5,42 @@
 clear
 
 # Preliminary instructions
-echo "This script will automatically install the Dracula (https://github.com/dracula/gtk) theme and Tela-circle-dracula icon set (https://github.com/vinceliuice/Tela-circle-icon-theme) for GNOME, on the local user."
+printf 'Welcome to the Dracula Theme and Tela-circle-dracula Icon Set Installer for GNOME!\n\n'
 
-echo "Please ensure that Gnome Tweaks and Gnome Shell Extensions (https://gitlab.gnome.org/GNOME/gnome-shell-extensions) is installed on your system. This does not require root privileges, only a local user with sudo. Please ensure you have the necessary permissions to install packages and create directories. You may be prompted for your password to install packages. Press any key to continue or Ctrl+C to cancel..."
+printf 'NOTE: This script requires sudo privileges to install necessary packages and set up directories. Please ensure you have the necessary permissions to run this script.\n\n'
+
+printf 'This script will automatically install the Dracula (https://github.com/dracula/gtk) theme and Tela-circle-dracula icon set (https://github.com/vinceliuice/Tela-circle-icon-theme) for GNOME, on the local user.\n\n'
+
+printf 'Gnome Tweaks and Gnome Shell Extensions will be installed if they are not already present. You may be prompted for your password to install packages.\n\n'
+
+printf 'Press any key to continue or Ctrl+C to cancel...'
 read -n 1 -s
 
 # checking if gnome tweaks is installed
-echo "Checking if GNOME Tweaks is installed..."
+printf 'Checking if GNOME Tweaks is installed...\n'
 if ! command -v gnome-tweaks &> /dev/null; then
-	echo "GNOME Tweaks could not be found, installing..."
+	printf 'GNOME Tweaks could not be found, installing...\n'
 	sudo apt-get install -y gnome-tweaks
 else
-	echo "GNOME Tweaks is already installed."
+	printf 'GNOME Tweaks is already installed.\n'
 fi
 
 #check if gnome shell extensions is installed
-echo "Checking if GNOME Shell Extensions is installed..."
+printf 'Checking if GNOME Shell Extensions is installed...\n'
 if ! command -v gnome-shell-extension-tool &> /dev/null; then
-	echo "GNOME Shell Extensions could not be found, installing..."
+	printf 'GNOME Shell Extensions could not be found, installing...\n'
 	sudo apt-get install -y gnome-shell-extensions gnome-extensions
 else
-	echo "GNOME Shell Extensions is already installed."
+	printf 'GNOME Shell Extensions is already installed.\n'
 fi
 
 # Checking if tar is installed
-echo "Setting up compression tools..."
+printf 'Setting up compression tools...\n'
 if ! command -v tar &> /dev/null; then
-	echo "tar could not be found, installing..."
+	printf 'tar could not be found, installing...\n'
 	sudo apt-get install -y tar
 else
-	echo "tar is already installed."
+	printf 'tar is already installed.\n'
 fi
 
 # get the current logged in user's directory
@@ -100,10 +106,18 @@ sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.des
 # also set the shell theme to Dracula
 sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.shell.extensions.user-theme name "Dracula"
 
-echo "###### FINISH ######"
-echo "Setup complete! Themes should have been automatically applied to the current user ($USER_NAME)."
-echo "If in rare cases that it is not, please open GNOME Tweaks and select the 'Dracula' theme on the Shell and Legacy Applications menu, and 'Tela-circle-dracula' icon set."
-echo "Awesome wallpapers to complement your installation can be found here: https://github.com/dracula/wallpaper"
-echo "Log out and log back in to see the changes take effect. If not, restart your system."
-echo "Press any key to exit..."
+
+
+# exit instructions *******************************************
+
+printf '\n\n###### FINISH ######\n\n'
+
+printf 'Setup complete! Themes should have been automatically applied to the current user (%s).\n\n' "$USER_NAME"
+
+printf 'If in rare cases that it is not, please open GNOME Tweaks and select the "Dracula" theme on the Shell and Legacy Applications menu, and "Tela-circle-dracula" icon set. Log out and log back in to see the changes take effect. If not, restart your system.\n\n'
+
+printf 'TIPS: Awesome wallpapers to complement your installation can be found here: https://github.com/dracula/wallpaper\n\n'
+
+printf 'Press any key to exit...\n\n'
+
 read -n 1 -s
