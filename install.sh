@@ -101,8 +101,8 @@ sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.des
 sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.shell.extensions.user-theme name "Dracula"
 
 echo "###### FINISH ######"
-echo "Setup complete! You can now use GNOME Tweaks to apply the themes and icons."
-echo "Please open GNOME Tweaks and select the 'Dracula' theme on the Shell and Legacy Applications menu, and 'Tela-circle-dracula' icon set."
+echo "Setup complete! Themes should have been automatically applied to the current user ($USER_NAME)."
+echo "If in rare cases that it is not, please open GNOME Tweaks and select the 'Dracula' theme on the Shell and Legacy Applications menu, and 'Tela-circle-dracula' icon set."
 echo "Awesome wallpapers to complement your installation can be found here: https://github.com/dracula/wallpaper"
 echo "Log out and log back in to see the changes take effect. If not, restart your system."
 echo "Press any key to exit..."
