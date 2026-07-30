@@ -89,14 +89,14 @@ ICONS_DIRECTORY_XDG=$USER_HOME/.local/share/icons
 ICONS_DIRECTORY_LEGACY=$USER_HOME/.icons
 THEMES_DIRECTORY_LEGACY=$USER_HOME/.themes
 
-	if [ -d "ICONS_DIRECTORY_LEGACY" ]; then
+	if [ -d ICONS_DIRECTORY_LEGACY ]; then
 		echo "Folder '$ICONS_DIRECTORY_LEGACY' exists."
 	else
 		echo "Creating folder '$ICONS_DIRECTORY_LEGACY'..."
 		mkdir -p "$ICONS_DIRECTORY_LEGACY"
 	fi
 
-	if [ -d "THEMES_DIRECTORY_LEGACY" ]; then
+	if [ -d THEMES_DIRECTORY_LEGACY ]; then
 		echo "Folder '$THEMES_DIRECTORY_LEGACY' exists."
 	else
 		echo "Creating folder '$THEMES_DIRECTORY_LEGACY'..."
