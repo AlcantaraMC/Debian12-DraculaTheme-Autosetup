@@ -20,32 +20,33 @@ read -n 1 -s
 
 
 # Checking if some dependencies are installed ###############################################################
+printf '\n\n[PREREQUISITES]:\n'
 
 # checking if gnome tweaks is installed
-printf 'Checking if GNOME Tweaks is installed...\n'
+printf 'Checking if GNOME Tweaks is installed...'
 if ! command -v gnome-tweaks &> /dev/null; then
-	printf 'GNOME Tweaks could not be found, installing...\n'
+	printf 'NO, installing...\n'
 	sudo apt-get install -y gnome-tweaks
 else
-	printf 'GNOME Tweaks is already installed.\n'
+	printf 'YES.\n'
 fi
 
 #check if gnome shell extensions is installed
-printf 'Checking if GNOME Shell Extensions is installed...\n'
+printf 'Checking if GNOME Shell Extensions is installed...'
 if ! command -v gnome-shell-extension-tool &> /dev/null; then
-	printf 'GNOME Shell Extensions could not be found, installing...\n'
+	printf 'NO, installing...\n'
 	sudo apt-get install -y gnome-shell-extensions gnome-extensions
 else
-	printf 'GNOME Shell Extensions is already installed.\n'
+	printf 'YES.\n'
 fi
 
 # Checking if tar is installed
-printf 'Setting up compression tools...\n'
+printf 'Checking if tar is installed...'
 if ! command -v tar &> /dev/null; then
-	printf 'tar could not be found, installing...\n'
+	printf 'NO, installing...\n'
 	sudo apt-get install -y tar
 else
-	printf 'tar is already installed.\n'
+	printf 'YES.\n'
 fi
 
 
@@ -62,22 +63,21 @@ USER_NAME=$(eval echo ${SUDO_USER})
 
 # Setting up install directories for themes and icons
 ###############################################################
-
-echo "Setting up themes and icons directories..."
+printf '\n[THEME DIRECTORY CHECKS]:\n'
 
 # checking for the existence of the themes and icons directories according
 # to the XDG Base Directory Specification
 THEMES_DIRECTORY_XDG=$USER_HOME/.local/share/themes
 ICONS_DIRECTORY_XDG=$USER_HOME/.local/share/icons
 
-	if [ -d THEMES_DIRECTORY_XDG ]; then
+	if [ -d $THEMES_DIRECTORY_XDG ]; then
 		echo "Folder '$THEMES_DIRECTORY_XDG' exists."
 	else
 		echo "Creating folder '$THEMES_DIRECTORY_XDG'..."
 		mkdir -p "$THEMES_DIRECTORY_XDG"
 	fi
 
-	if [ -d ICONS_DIRECTORY_XDG ]; then
+	if [ -d $ICONS_DIRECTORY_XDG ]; then
 		echo "Folder '$ICONS_DIRECTORY_XDG' exists."
 	else
 		echo "Creating folder '$ICONS_DIRECTORY_XDG'..."
@@ -89,18 +89,26 @@ ICONS_DIRECTORY_XDG=$USER_HOME/.local/share/icons
 ICONS_DIRECTORY_LEGACY=$USER_HOME/.icons
 THEMES_DIRECTORY_LEGACY=$USER_HOME/.themes
 
-	if [ -d ICONS_DIRECTORY_LEGACY ]; then
+	if [ -d $ICONS_DIRECTORY_LEGACY ]; then
 		echo "Folder '$ICONS_DIRECTORY_LEGACY' exists."
 	else
 		echo "Creating folder '$ICONS_DIRECTORY_LEGACY'..."
 		mkdir -p "$ICONS_DIRECTORY_LEGACY"
 	fi
 
-	if [ -d THEMES_DIRECTORY_LEGACY ]; then
+	if [ -d $THEMES_DIRECTORY_LEGACY ]; then
 		echo "Folder '$THEMES_DIRECTORY_LEGACY' exists."
 	else
 		echo "Creating folder '$THEMES_DIRECTORY_LEGACY'..."
 		mkdir -p "$THEMES_DIRECTORY_LEGACY"
+	fi
+
+	# Checking if ~/.config/gtk-4.0 exists
+	if [ -d $USER_HOME/.config/gtk-4.0 ]; then
+		echo "Directory $USER_HOME/.config/gtk-4.0 exists."
+	else
+		echo "Creating directory $USER_HOME/.config/gtk-4.0..."
+		mkdir -p $USER_HOME/.config/gtk-4.0
 	fi
 
 # Displaying the directories
@@ -114,6 +122,7 @@ THEMES_DIRECTORY_LEGACY=$USER_HOME/.themes
 
 # Copying Theme files and icons to the respective directories
 ###############################################################
+printf '\n[THEME INSTALLATION]:\n'
 
 	# extracting the theme and icon files from the compressed archives
 	echo "Extracting theme files..."
@@ -124,7 +133,6 @@ THEMES_DIRECTORY_LEGACY=$USER_HOME/.themes
 	echo "Copying themes and icons to the respective directories..."
 	cp -r ./Dracula "$THEMES_DIRECTORY_XDG"
 	cp -r ./Tela-circle-dracula "$ICONS_DIRECTORY_XDG"
-	echo "Cleaning up extracted files..."
 
 	# Copying themes and icons to the legacy directories
 	echo "Copying themes and icons to the legacy directories..."
@@ -134,30 +142,44 @@ THEMES_DIRECTORY_LEGACY=$USER_HOME/.themes
 # For GTK 4.0 which GNOME uses by default, override the default gtk.css 
 # and gtk-dark.css files with the ones from the Dracula theme
 
-	# Checking if ~/.config/gtk-4.0 exists
-	if [ -d $USER_HOME/.config/gtk-4.0 ]; then
-		echo "Directory ~/.config/gtk-4.0 already exists."
-	else
-		echo "Creating directory ~/.config/gtk-4.0..."
-		mkdir -p $USER_HOME/.config/gtk-4.0
-	fi
-
 	# Copying GTK CSS files to the gtk-4.0 directory
+	echo "Overriding GTK 4.0 CSS files..."
 	cp ./Dracula/gtk-4.0/gtk.css $USER_HOME/.config/gtk-4.0/
 	cp ./Dracula/gtk-4.0/gtk-dark.css $USER_HOME/.config/gtk-4.0/
 
-# copying assets (e.g. custom buttons) to the correct directories
-cp -r ./Dracula/assets $USER_HOME/.config/
+	# copying assets (e.g. custom buttons) to the correct directories
+	printf "Copying assets (i.e. buttons) to ~/.config/\n"
+	cp -r ./Dracula/assets $USER_HOME/.config/
 
 
-# automatically select the theme and icon set using gsettings
-echo "Applying the Dracula theme and Tela-circle-dracula icon set to the current user ($USER_NAME)..."
-sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface gtk-theme "Dracula"
-sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-dracula"
+# Actually applying the theme and icon set to the current user
+###############################################################
+printf '\n[THEME APPLICATION]:\n'
 
-# also set the shell theme to Dracula
-sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.shell.extensions.user-theme name "Dracula"
+	# automatically select the theme and icon set using gsettings
+	echo "Applying the Dracula theme and Tela-circle-dracula icon set to the current user ($USER_NAME)..."
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface gtk-theme "Dracula"
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-dracula"
 
+	# also set the shell theme to Dracula
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session gsettings set org.gnome.shell.extensions.user-theme name "Dracula"
+
+	# for flatpak users, also set the theme and icon set for flatpak applications
+
+	# Grant access to GTK 3/4 user themes
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session flatpak override --user --filesystem=$USER_HOME/.local/share/themes:ro
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session flatpak override --user --filesystem=$USER_HOME/.themes:ro
+
+	# Grant access to user icons and cursors
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session flatpak override --user --filesystem=$USER_HOME/.local/share/icons:ro
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session flatpak override --user --filesystem=$USER_HOME/.icons:ro
+
+	# Grant access to GTK 4 custom CSS configs
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session flatpak override --user --filesystem=$USER_HOME/.config/gtk-4.0:ro
+
+	echo "Applying the Dracula theme and Tela-circle-dracula icon set for Flatpak applications..."
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session flatpak override --user --env=GTK_THEME=Dracula
+	sudo -u "$USER_NAME" dbus-launch --exit-with-session flatpak override --user --env=ICON_THEME=Tela-circle-dracula
 
 
 # exit instructions *******************************************
