@@ -4,8 +4,9 @@
 
 clear
 
-# Preliminary instructions
-printf 'Welcome to the Dracula Theme and Tela-circle-dracula Icon Set Installer for GNOME!\n\n'
+# Preliminary instructions 
+###############################################################
+printf 'Welcome to the Dracula Theme and Tela-circle-dracula Icon Set Installer.\n\n'
 
 printf 'NOTE: This script requires sudo privileges to install necessary packages and set up directories. Please ensure you have the necessary permissions to run this script. This script is tested on Debian and Ubuntu running GNOME.\n\n'
 
@@ -15,6 +16,10 @@ printf 'Gnome Tweaks and Gnome Shell Extensions will be installed if they are no
 
 printf 'Press any key to continue or Ctrl+C to cancel...'
 read -n 1 -s
+
+
+
+# Checking if some dependencies are installed ###############################################################
 
 # checking if gnome tweaks is installed
 printf 'Checking if GNOME Tweaks is installed...\n'
@@ -43,60 +48,107 @@ else
 	printf 'tar is already installed.\n'
 fi
 
+
+# Setting up environment variables
+###############################################################
+
 # get the current logged in user's directory
 USER_HOME=$(eval echo ~${SUDO_USER})
 
 # getting the current logged in user's username
 USER_NAME=$(eval echo ${SUDO_USER})
 
-# Setting up directories for themes and icons
-ICONS_DIRECTORY=$USER_HOME/.icons
-THEMES_DIRECTORY=$USER_HOME/.themes
+
+
+# Setting up install directories for themes and icons
+###############################################################
 
 echo "Setting up themes and icons directories..."
 
-	if [ -d "ICONS_DIRECTORY" ]; then
-		echo "Folder '$ICONS_DIRECTORY' exists."
+# checking for the existence of the themes and icons directories according
+# to the XDG Base Directory Specification
+THEMES_DIRECTORY_XDG=$USER_HOME/.local/share/themes
+ICONS_DIRECTORY_XDG=$USER_HOME/.local/share/icons
+
+	if [ -d THEMES_DIRECTORY_XDG ]; then
+		echo "Folder '$THEMES_DIRECTORY_XDG' exists."
 	else
-		echo "Creating folder '$ICONS_DIRECTORY'..."
-		mkdir -p "$ICONS_DIRECTORY"
+		echo "Creating folder '$THEMES_DIRECTORY_XDG'..."
+		mkdir -p "$THEMES_DIRECTORY_XDG"
 	fi
 
-	if [ -d "THEMES_DIRECTORY" ]; then
-		echo "Folder '$THEMES_DIRECTORY' exists."
+	if [ -d ICONS_DIRECTORY_XDG ]; then
+		echo "Folder '$ICONS_DIRECTORY_XDG' exists."
 	else
-		echo "Creating folder '$THEMES_DIRECTORY'..."
-		mkdir -p "$THEMES_DIRECTORY"
+		echo "Creating folder '$ICONS_DIRECTORY_XDG'..."
+		mkdir -p "$ICONS_DIRECTORY_XDG"
 	fi
 
-echo "Extracting theme files..."
-tar -xf ./theme/gtk/Dracula.tar.xz
-tar -xf ./theme/icon/Tela-circle-dracula.tar.xz
+# checking for the existence of the themes and icons directories according
+# to GTK 3.0 and 4.0 specifications
+ICONS_DIRECTORY_LEGACY=$USER_HOME/.icons
+THEMES_DIRECTORY_LEGACY=$USER_HOME/.themes
 
-# Copying themes and icons to the respective directories
-echo "Copying themes and icons to the respective directories..."
-cp -r ./Dracula "$THEMES_DIRECTORY"
-cp -r ./Tela-circle-dracula "$ICONS_DIRECTORY"
-echo "Cleaning up extracted files..."
+	if [ -d "ICONS_DIRECTORY_LEGACY" ]; then
+		echo "Folder '$ICONS_DIRECTORY_LEGACY' exists."
+	else
+		echo "Creating folder '$ICONS_DIRECTORY_LEGACY'..."
+		mkdir -p "$ICONS_DIRECTORY_LEGACY"
+	fi
 
-# Checking if ~/.config/gtk-4.0 exists
-if [ -d $USER_HOME/.config/gtk-4.0 ]; then
-	echo "Directory ~/.config/gtk-4.0 already exists."
-else
-	echo "Creating directory ~/.config/gtk-4.0..."
-	mkdir -p $USER_HOME/.config/gtk-4.0
-fi
-
-# Copying GTK CSS files to the gtk-4.0 directory
-cp ./Dracula/gtk-4.0/gtk.css $USER_HOME/.config/gtk-4.0/
-cp ./Dracula/gtk-4.0/gtk-dark.css $USER_HOME/.config/gtk-4.0/
-
-# copying assets to the correct directories
-cp -r ./Dracula/assets $USER_HOME/.config/
+	if [ -d "THEMES_DIRECTORY_LEGACY" ]; then
+		echo "Folder '$THEMES_DIRECTORY_LEGACY' exists."
+	else
+		echo "Creating folder '$THEMES_DIRECTORY_LEGACY'..."
+		mkdir -p "$THEMES_DIRECTORY_LEGACY"
+	fi
 
 # Displaying the directories
-echo "Themes directory: $THEMES_DIRECTORY"
-echo "Icons directory: $ICONS_DIRECTORY"
+	echo "Themes directory (XDG): $THEMES_DIRECTORY_XDG"
+	echo "Icons directory (XDG): $ICONS_DIRECTORY_XDG"
+	echo "Themes directory (Legacy): $THEMES_DIRECTORY_LEGACY"
+	echo "Icons directory (Legacy): $ICONS_DIRECTORY_LEGACY"
+	echo "GTK 4.0 config directory: $USER_HOME/.config/gtk-4.0"
+
+
+
+# Copying Theme files and icons to the respective directories
+###############################################################
+
+	# extracting the theme and icon files from the compressed archives
+	echo "Extracting theme files..."
+	tar -xf ./theme/gtk/Dracula.tar.xz
+	tar -xf ./theme/icon/Tela-circle-dracula.tar.xz
+
+	# Copying themes and icons to the XDG directories
+	echo "Copying themes and icons to the respective directories..."
+	cp -r ./Dracula "$THEMES_DIRECTORY_XDG"
+	cp -r ./Tela-circle-dracula "$ICONS_DIRECTORY_XDG"
+	echo "Cleaning up extracted files..."
+
+	# Copying themes and icons to the legacy directories
+	echo "Copying themes and icons to the legacy directories..."
+	cp -r ./Dracula "$THEMES_DIRECTORY_LEGACY"
+	cp -r ./Tela-circle-dracula "$ICONS_DIRECTORY_LEGACY"
+
+# For GTK 4.0 which GNOME uses by default, override the default gtk.css 
+# and gtk-dark.css files with the ones from the Dracula theme
+
+	# Checking if ~/.config/gtk-4.0 exists
+	if [ -d $USER_HOME/.config/gtk-4.0 ]; then
+		echo "Directory ~/.config/gtk-4.0 already exists."
+	else
+		echo "Creating directory ~/.config/gtk-4.0..."
+		mkdir -p $USER_HOME/.config/gtk-4.0
+	fi
+
+	# Copying GTK CSS files to the gtk-4.0 directory
+	cp ./Dracula/gtk-4.0/gtk.css $USER_HOME/.config/gtk-4.0/
+	cp ./Dracula/gtk-4.0/gtk-dark.css $USER_HOME/.config/gtk-4.0/
+
+# copying assets (e.g. custom buttons) to the correct directories
+cp -r ./Dracula/assets $USER_HOME/.config/
+
 
 # automatically select the theme and icon set using gsettings
 echo "Applying the Dracula theme and Tela-circle-dracula icon set to the current user ($USER_NAME)..."
